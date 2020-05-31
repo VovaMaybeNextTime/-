@@ -1,0 +1,305 @@
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Net.Http.Headers;
+using System.Text;
+
+namespace Курсач
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            
+            bool exit = true;
+            do
+            {
+                Console.WriteLine("Выберите, что вы хотите выполнить");
+                Console.WriteLine("[1] - поиск необходимого каталога");
+                Console.WriteLine("[2] - создание каталога");
+                Console.WriteLine("[3] - удаление каталога");
+                Console.WriteLine("[4] - перемещение каталога");
+                Console.WriteLine("[5] - переименование каталога");
+                Console.WriteLine("[6] - создание файла");
+                Console.WriteLine("[7] - удаление файла");
+                Console.WriteLine("[8] - перемещение файла");
+                Console.WriteLine("[9] - переименование файла");
+                Console.WriteLine("[10] - выход");
+                string selection = Console.ReadLine();
+                switch (selection)
+                {
+                    case "[1]":
+                        Console.WriteLine("Вы выбрали поиск объекта");
+                        Console.WriteLine();
+                        //Ввод объекта, который необходимо найти------------------------------------------
+                        Console.Write("Введите необходимый путь по типу C:/Users/Home/Desktop");
+                        Console.WriteLine();
+                        string line = Console.ReadLine();
+                        Console.WriteLine("Ваш путь : ");
+                        Console.WriteLine(line);
+
+                        DirectoryInfo dir = new DirectoryInfo(line);
+                        DirectoryInfo[] dirs = dir.GetDirectories();
+                        Console.WriteLine();
+                        foreach (DirectoryInfo currentDir in dirs)
+                        {
+                            Console.WriteLine(" " + currentDir);
+                            DirectoryInfo[] currdirs = currentDir.GetDirectories();
+                            foreach(DirectoryInfo currdir in currdirs)
+                            {
+                                Console.WriteLine(" ├ " + currdir);
+                                FileInfo[] currfiles1 = currdir.GetFiles();
+                                foreach (FileInfo currfile1 in currfiles1)
+                                {
+                                    Console.WriteLine("   ├ " + currfile1);
+                                }
+                            }
+                            FileInfo[] currfiles = currentDir.GetFiles();
+                            foreach (FileInfo currfile in currfiles)
+                            {
+                                Console.WriteLine(" ├ " + currfile);
+                            }
+                        }
+
+                        FileInfo[] files = dir.GetFiles();
+                        foreach (FileInfo currentFile in files)
+                        {
+                            Console.WriteLine(" ├ " + currentFile);
+                        }
+                        //--------------------------------------------------------------------------------
+
+
+                        Console.Write("Введите true, если хотите пройтись глубже в каталоге");
+                        Console.WriteLine();
+                        bool goon = Convert.ToBoolean(Console.ReadLine());
+                        if (goon == true)
+                        {
+                            //Если хотим пройтись глубже в выбранный объект-----------------------------------
+                            Console.Write("Введите необходимый путь по типу /English");
+                            Console.WriteLine();
+                            string line2 = Console.ReadLine();
+                            line = line + Convert.ToString(line2);
+                            DirectoryInfo dir2 = new DirectoryInfo(line);
+                            DirectoryInfo[] dirs2 = dir2.GetDirectories();
+                            Console.WriteLine();
+                            foreach (DirectoryInfo currentDir in dirs2)
+                            {
+                                Console.WriteLine("  ├ " + currentDir);
+                            }
+
+                            FileInfo[] files2 = dir2.GetFiles();
+                            foreach (FileInfo currentFile in files2)
+                            {
+                                Console.WriteLine("  ├ " + currentFile);
+                            }
+                            //--------------------------------------------------------------------------------
+                        }
+
+                        //Если хотим вернуться на шаг выше------------------------------------------------
+                        Console.Write("Введите true, если хотите вернуться назад");
+                        Console.WriteLine();
+                        bool returnif = Convert.ToBoolean(Console.ReadLine());
+                        if (returnif == true)
+                        {
+                            foreach (DirectoryInfo currentDir in dirs)
+                            {
+                                Console.WriteLine(" " + currentDir);
+                                DirectoryInfo[] currdirs = currentDir.GetDirectories();
+                                foreach (DirectoryInfo currdir in currdirs)
+                                {
+                                    Console.WriteLine(" ├ " + currdir);
+                                    FileInfo[] currfiles1 = currdir.GetFiles();
+                                    foreach (FileInfo currfile1 in currfiles1)
+                                    {
+                                        Console.WriteLine("   ├ " + currfile1);
+                                    }
+                                }
+                                FileInfo[] currfiles = currentDir.GetFiles();
+                                foreach (FileInfo currfile in currfiles)
+                                {
+                                    Console.WriteLine(" ├ " + currfile);
+                                }
+                            }
+                        }
+                        //--------------------------------------------------------------------------------
+                        break;
+
+                    case "[2]":
+                        Console.WriteLine("Вы выбрали создать каталог");
+                        Console.WriteLine();
+                        //Создание каталога---------------------------------------------------------------
+                        Console.Write("Введите необходимый путь по типу C:/Users/Home/Desktop");
+                        Console.WriteLine();
+                        string name = Console.ReadLine();
+                        Console.WriteLine("Ваше место назначения : ");
+                        Console.WriteLine(name);
+                        Console.Write("Введите название каталога по типу programa");
+                        Console.WriteLine();
+                        string nameofkat = Console.ReadLine();
+                        Console.WriteLine("Ваше название каталога : ");
+                        Console.WriteLine(nameofkat);
+                        DirectoryInfo dirinfo = new DirectoryInfo(name);
+                        if (!dirinfo.Exists)
+                        {
+                            dirinfo.Create();
+                        }
+                        dirinfo.CreateSubdirectory(nameofkat);
+                        //--------------------------------------------------------------------------------
+                        break;
+
+                    case "[3]":
+                        Console.WriteLine("Вы выбрали удалить каталог");
+                        Console.WriteLine();
+                        //Удаление каталога---------------------------------------------------------------
+                        Console.Write("Введите необходимый путь по типу C:/Users/Home/Desktop/programa");
+                        Console.WriteLine();
+                        string dirName = Console.ReadLine();
+                        Console.WriteLine("Ваше место назначения : ");
+                        Console.WriteLine(dirName);
+                        try
+                        {
+                            DirectoryInfo dirInfo = new DirectoryInfo(dirName);
+                            dirInfo.Delete(true);
+                            Console.WriteLine("Каталог удален");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                        //--------------------------------------------------------------------------------
+                        break;
+
+                    case "[4]":
+                        Console.WriteLine("Вы выбрали переместить каталог");
+                        Console.WriteLine();
+                        //Перемещение каталога------------------------------------------------------------
+                        Console.Write("Введите название старого каталога по типу C:/Users/Home/Desktop/programa");
+                        Console.WriteLine();
+                        string oldPath = Console.ReadLine();
+                        Console.WriteLine("Введенные данные : ");
+                        Console.WriteLine(oldPath);
+                        Console.Write("Введите название нового каталога по типу C:/Users/Home/Desktop/programa");
+                        Console.WriteLine();
+                        string newPath = Console.ReadLine();
+                        Console.WriteLine("Введенные данные : ");
+                        Console.WriteLine(newPath);
+                        DirectoryInfo dirInfo1 = new DirectoryInfo(oldPath);
+                        if (dirInfo1.Exists && Directory.Exists(newPath) == false)
+                        {
+                            dirInfo1.MoveTo(newPath);
+                        }
+                        //--------------------------------------------------------------------------------
+                        break;
+
+                    case "[5]":
+                        Console.WriteLine("Вы выбрали переименовать каталог");
+                        Console.WriteLine();
+                        //Переименование каталога---------------------------------------------------------
+                        Console.Write("Введите старое название по типу C:/Users/Home/Desktop/programa");
+                        Console.WriteLine();
+                        string oldPath1 = Console.ReadLine();
+                        Console.WriteLine("Введенные данные : ");
+                        Console.WriteLine(oldPath1);
+                        Console.Write("Введите новое название по типу C:/Users/Home/Desktop/programa");
+                        Console.WriteLine();
+                        string newPath1 = Console.ReadLine();
+                        Console.WriteLine("Введенные данные : ");
+                        Console.WriteLine(newPath1);
+                        DirectoryInfo renInfo = new DirectoryInfo(oldPath1);
+                        if (renInfo.Exists && Directory.Exists(newPath1) == false)
+                        {
+                            renInfo.MoveTo(newPath1);
+                        }
+                        //--------------------------------------------------------------------------------
+                        break;
+
+                    case "[6]":
+                        Console.WriteLine("Вы выбрали создать файл");
+                        Console.WriteLine();
+                        //Создание файла------------------------------------------------------------------
+                        Console.Write("Введите путь и название файла по типу C:/Users/Home/Desktop/programa.txt");
+                        Console.WriteLine();
+                        string nameoffile = Console.ReadLine();
+                        Console.WriteLine("Ваше название файла : ");
+                        Console.WriteLine(nameoffile);
+                        FileInfo fileinfo = new FileInfo(nameoffile);
+                        fileinfo.Create();
+                        //--------------------------------------------------------------------------------
+                        break;
+
+                    case "[7]":
+                        Console.WriteLine("Вы выбрали удалить файл");
+                        Console.WriteLine();
+                        //Удаление файла------------------------------------------------------------------
+                        Console.Write("Введите необходимый путь по типу C:/Users/Home/Desktop/programa.txt");
+                        Console.WriteLine();
+                        string fileName = Console.ReadLine();
+                        Console.WriteLine("Ваше место назначения : ");
+                        Console.WriteLine(fileName);
+                        try
+                        {
+                            FileInfo fileInfo = new FileInfo(fileName);
+                            fileInfo.Delete();
+                            Console.WriteLine("Файл удален");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                        //--------------------------------------------------------------------------------
+                        break;
+
+                    case "[8]":
+                        Console.WriteLine("Вы выбрали переместить файл");
+                        Console.WriteLine();
+                        //Перемещение файла---------------------------------------------------------------
+                        Console.Write("Введите название старого пути по типу C:/Users/Home/Desktop/programa.txt");
+                        Console.WriteLine();
+                        string oldPath2 = Console.ReadLine();
+                        Console.WriteLine("Введенные данные : ");
+                        Console.WriteLine(oldPath2);
+                        Console.Write("Введите название нового пути по типу C:/Users/Home/Desktop/programa.txt");
+                        Console.WriteLine();
+                        string newPath2 = Console.ReadLine();
+                        Console.WriteLine("Введенные данные : ");
+                        Console.WriteLine(newPath2);
+                        FileInfo fileInfo1 = new FileInfo(oldPath2);
+                        if (fileInfo1.Exists && Directory.Exists(newPath2) == false)
+                        {
+                            fileInfo1.MoveTo(newPath2);
+                        }
+                        //--------------------------------------------------------------------------------
+                        break;
+
+                    case "[9]":
+                        Console.WriteLine("Вы выбрали переименовать файл");
+                        Console.WriteLine();
+                        //Переименование файла------------------------------------------------------------
+                        Console.Write("Введите название старого пути по типу C:/Users/Home/Desktop/programa.txt");
+                        Console.WriteLine();
+                        string oldPath3 = Console.ReadLine();
+                        Console.WriteLine("Введенные данные : ");
+                        Console.WriteLine(oldPath3);
+                        Console.Write("Введите название нового пути по типу C:/Users/Home/Desktop/programa.txt");
+                        Console.WriteLine();
+                        string newPath3 = Console.ReadLine();
+                        Console.WriteLine("Введенные данные : ");
+                        Console.WriteLine(newPath3);
+                        FileInfo fileInfo2 = new FileInfo(oldPath3);
+                        if (fileInfo2.Exists && Directory.Exists(newPath3) == false)
+                        {
+                            fileInfo2.MoveTo(newPath3);
+                        }
+                        //--------------------------------------------------------------------------------
+                        break;
+                    case "[10]":
+                        exit = false;
+                        break;
+                    default:
+                        Console.WriteLine("Неверно введеное значение");
+                        break;
+                }
+            } while (exit);
+        }
+    }
+}
