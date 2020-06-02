@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace Курсач
 {
@@ -27,6 +29,11 @@ namespace Курсач
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                string writePath = "C:/Users/Home/Desktop/hta.txt";
+                using (StreamWriter sw = new StreamWriter(writePath, false))
+                {
+                    sw.WriteLine(ex.Message);
+                }
             }
             //--------------------------------------------------------------------------------
         }
